@@ -1,5 +1,6 @@
 # Local hidden execution directories
 .terraform/
+tf/.terraform/*
 
 # Provider lock files (optional for personal local labs, but untracked now)
 .terraform.lock.hcl
