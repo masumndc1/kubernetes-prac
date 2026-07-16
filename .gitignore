@@ -32,3 +32,4 @@ tf/tetragon/*
 tf/kyverno/*
 tf/.terraform*
 tf/.terraform.lock.hcl
+tf/kind-config
