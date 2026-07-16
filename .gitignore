@@ -24,4 +24,11 @@ override.tf.json
 terraform.rc
 
 # Ignore plugin cache
-.terraform.d/plugin-cache# git ignore file
+.terraform.d/plugin-cache
+
+# ignore local helm file
+tf/cilium/*
+tf/tetragon/*
+tf/kyverno/*
+tf/.terraform*
+tf/.terraform.lock.hcl
