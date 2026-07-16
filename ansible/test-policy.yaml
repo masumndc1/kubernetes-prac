@@ -1,0 +1,20 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-tier-label
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+  - name: check-for-tier-label
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      message: "Label 'tier' is required for all pods in this cluster."
+      pattern:
+        metadata:
+          labels:
+            tier: "?*" # Means the label must exist and cannot be empty
