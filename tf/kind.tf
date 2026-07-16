@@ -76,9 +76,8 @@ resource "kind_cluster" "local_cluster" {
 # -----------------------------------------------------------------------------
 resource "helm_release" "cilium" {
   name       = "cilium"
-  repository = "https://helm.cilium.io"
-  #chart      = "./cilium"
-  chart      = "cilium"
+  #repository = "https://helm.cilium.io"
+  chart      = "./cilium"
   version    = "1.16.1"
   namespace  = "kube-system"
 
@@ -124,9 +123,8 @@ resource "helm_release" "cilium" {
 # -----------------------------------------------------------------------------
 resource "helm_release" "tetragon" {
   name       = "tetragon"
-  repository = "https://helm.cilium.io"
-  chart      = "tetragon"
-  #chart      = "./tetragon"
+  #repository = "https://helm.cilium.io"
+  chart      = "./tetragon"
   version    = "1.1.2"
   namespace  = "kube-system"
 
@@ -139,7 +137,6 @@ resource "helm_release" "tetragon" {
 resource "helm_release" "kyverno" {
   name             = "kyverno"
   repository       = "https://kyverno.github.io/kyverno/"
-  #chart            = "./kyverno"
   chart            = "kyverno"
   version          = "3.3.0"
   namespace        = "kyverno"
