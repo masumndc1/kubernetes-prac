@@ -1,4 +1,21 @@
-terraform.tfstate
-terraform.tfstate*
-./.terraform
-./.terraform*
+# Local hidden execution directories
+.terraform/
+
+# Provider lock files (optional for personal local labs, but untracked now)
+.terraform.lock.hcl
+
+# State files and backups
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Local variable overrides
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+_override.tf
+_override.tf.json
