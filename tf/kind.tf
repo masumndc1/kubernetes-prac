@@ -123,8 +123,9 @@ resource "helm_release" "cilium" {
 # -----------------------------------------------------------------------------
 resource "helm_release" "tetragon" {
   name       = "tetragon"
-  #repository = "https://helm.cilium.io"
-  chart      = "./tetragon"
+  repository = "https://helm.cilium.io"
+  chart      = "tetragon"
+  #chart      = "./tetragon"
   version    = "1.1.2"
   namespace  = "kube-system"
 
