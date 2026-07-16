@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  gather_facts: true
+
+  tasks:
+   - name: Install helm
+     community.general.homebrew:
+       name: helm
+       state: present
+     when: ansible_os_family == "Darwin"
+     ignore_errors: true
+
+   - name: Deploy Kind cluster on Mac
+     ansible.builtin.command: "kind create cluster --name kind --config kind.yaml"
+     register: kind_result
+     changed_when: "'Creating cluster' in kind_result.stdout"
+     failed_when:
+       - kind_result.rc != 0
+       - "'already exists' not in kind_result.stderr"
+     when: ansible_os_family == "Darwin"
