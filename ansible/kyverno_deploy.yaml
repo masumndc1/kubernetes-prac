@@ -1,0 +1,44 @@
+---
+- hosts: localhost
+  connection: local
+
+  tasks:
+   - name: Wait for Kubernetes API and nodes to be ready
+     command: kubectl wait --for=condition=Ready nodes --all --timeout=300s
+     register: node_check
+     until: node_check.rc == 0
+     retries: 10
+     delay: 10
+
+   - name: Get list of Helm repositories
+     command: helm repo list -o json
+     register: helm_repos
+     changed_when: false
+
+   - name: Add Kyverno Helm repository
+     kubernetes.core.helm_repository:
+       name: kyverno
+       repo_url: https://kyverno.github.io/kyverno/
+     when:
+       - "'kyverno' not in (helm_repos.stdout | from_json | map(attribute='name'))"
+
+   - name: Deploy Kyverno
+     kubernetes.core.helm:
+       name: kyverno
+       chart_ref: kyverno/kyverno
+       release_namespace: kyverno
+       create_namespace: yes
+       update_repo_cache: yes
+       values:
+         # Production-ready configuration
+         admissionController:
+           replicas: 2
+         backgroundController:
+           replicas: 2
+         cleanupController:
+           replicas: 2
+         reportsController:
+           replicas: 2
+         # Ensure CRDs are installed by Helm
+         crds:
+           install: true
