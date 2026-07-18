@@ -1,0 +1,10 @@
+---
+- name: Manage Local Cluster Policies
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+   - name: Ensure Kyverno Test Policy is applied
+     kubernetes.core.k8s:
+       state: present
+       definition: "{{ lookup('file', 'yaml_files/test_policy.yaml') | from_yaml }}"
