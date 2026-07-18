@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+        app.kubernetes.io/name: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: default
+spec:
+  #type: LoadBalancer
+  #type: ClusterIP
+  selector:
+    app.kubernetes.io/name: nginx
+  ports:
+    - port: 8080
+      targetPort: 80
+      name: http
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: nginx-route
+  namespace: default # or wherever your app is
+spec:
+  parentRefs:
+   - name: cilium-gateway
+     namespace: kube-system
+  hostnames:
+   - "nginx.masum.com"
+  rules:
+   - backendRefs:
+     - kind: Service
+       name: nginx-service
+       port: 8080
