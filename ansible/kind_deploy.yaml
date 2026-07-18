@@ -3,15 +3,13 @@
   gather_facts: true
 
   tasks:
-   - name: Install helm
-     community.general.homebrew:
-       name: helm
-       state: present
+   - name: Install helm in mac if not installed
+     ansible.builtin.debug:
+       msg: "Install helm by brew install helm"
      when: ansible_os_family == "Darwin"
-     ignore_errors: true
 
    - name: Deploy Kind cluster on Mac
-     ansible.builtin.command: "kind create cluster --name kind --config kind.yaml"
+     ansible.builtin.command: "kind create cluster --name kind --config yaml_files/kind.yaml"
      register: kind_result
      changed_when: "'Creating cluster' in kind_result.stdout"
      failed_when:
