@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: Deploy nginx service
+      kubernetes.core.k8s:
+        state: present
+        src: yaml_files/nginx.yaml
+      when: ansible_os_family == "Darwin"
