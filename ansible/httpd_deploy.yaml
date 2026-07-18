@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: Deploy httpd service
+      kubernetes.core.k8s:
+        state: present
+        src: yaml_files/httpd.yaml
+      when: ansible_os_family == "Darwin"
