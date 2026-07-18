@@ -1,0 +1,7 @@
+[all:children]
+localhosts
+
+[localhosts]
+localhost ansible_connection=local
+
+[all:vars]
