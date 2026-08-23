@@ -1,0 +1,111 @@
+---
+- name: Prepare Laptop Hardware & OS Configuration
+  #hosts: k3s_cluster
+  hosts: lap-macpro-lan:lap-macmini-lan:lap-asus-lan:lap-lenovo-lan
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Install firewalld
+      apt:
+        name: 'firewalld'
+        state: latest
+        update_cache: yes
+      when: ansible_distribution == "Debian"
+
+    - name: add port 6444 and 6443 in firewall
+      firewalld:
+        port: "{{ item }}"
+        permanent: yes
+        state: enabled
+        immediate: true
+      with_items:
+        - 6443/tcp
+        - 6444/tcp
+      when: ansible_distribution == "Debian"
+
+    - name: Disable Swap immediately
+      command: swapoff -a
+      when: ansible_swaptotal_mb > 0
+      changed_when: false
+
+    - name: Remove Swap entries from /etc/fstab
+      replace:
+        path: /etc/fstab
+        regexp: '^([^#\s]+\s+[^#\s]+\s+swap\s+.*)$'
+        replace: '# \1'
+
+- name: Bootstrap K3s Control Plane without Default CNI
+  #hosts: control_nodes
+  hosts: lap-macmini-lan
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Install K3s Control Plane Server (No Flannel)
+      shell: |
+        curl -sfL https://get.k3s.io | sh -s - server \
+          --flannel-backend=none \
+          --disable-network-policy \
+          --disable servicelb \
+          --node-ip {{ ansible_host }} \
+          --write-kubeconfig-mode 644
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: Fetch K3s Cluster Token
+      slurp:
+        src: /var/lib/rancher/k3s/server/node-token
+      register: k3s_token_base64
+
+    - name: Set Cluster Token Fact
+      set_fact:
+        k3s_token: "{{ k3s_token_base64.content | b64decode | trim }}"
+
+- name: Deploy Cilium via Helm
+  #hosts: control_nodes
+  hosts: lap-macmini-lan
+  become: true
+  gather_facts: true
+
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+  tasks:
+    - name: Install Helm binary
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      args:
+        creates: /usr/local/bin/helm
+
+    - name: Add Cilium Helm repository
+      command: helm repo add cilium https://helm.cilium.io/
+      changed_when: false
+
+    - name: Update Helm repos
+      command: helm repo update
+      changed_when: false
+
+    - name: Install or Upgrade Cilium CNI
+      command: >
+        helm upgrade --install cilium cilium/cilium
+        --namespace kube-system
+        --set k8sServiceHost={{ ansible_host }}
+        --set k8sServicePort=6443
+        --set kubeProxyReplacement=true
+        --set ipam.mode=kubernetes
+
+- name: Join K3s Worker Nodes
+  #hosts: workers
+  hosts: lap-macpro-lan:lap-asus-lan:lap-lenovo-lan
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Install K3s Agent on Workers
+      shell: |
+        curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars[groups['control_nodes'][0]]['ansible_host'] }}:6443 \
+          K3S_TOKEN="{{ hostvars[groups['control_nodes'][0]]['k3s_token'] }}" \
+          sh -s - agent --node-ip {{ ansible_host }}
+      args:
+        creates: /usr/local/bin/k3s-agent
