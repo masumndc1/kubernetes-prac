@@ -1,7 +1,22 @@
 [all:children]
 localhosts
+k3s_cluster
+
+[k3s_cluster]
+control_nodes
+workers
+
+[control_nodes]
+lap-macmini-lan ansible_host=192.168.2.113
+
+[workers]
+lap-macpro-lan ansible_host=192.168.2.114
+lap-lenovo-lan ansible_host=192.168.2.105
+lap-asus-lan ansible_host=192.168.2.103
 
 [localhosts]
 localhost ansible_connection=local
 
 [all:vars]
+ansible_user=masum
+ansible_python_interpreter=/usr/bin/python3
