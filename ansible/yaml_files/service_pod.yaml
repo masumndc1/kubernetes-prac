@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: build-observer
+spec:
+  serviceAccountName: build-bot
+  restartPolicy: Never
+  containers:
+  - name: observer
+    image: alpine

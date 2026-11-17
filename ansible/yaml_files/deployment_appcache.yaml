@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app-cache
+  name: app-cache
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: app-cache
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: app-cache
+    spec:
+      containers:
+      - image: memcached:latest
+        name: memcached
+        resources: {}
+status: {}

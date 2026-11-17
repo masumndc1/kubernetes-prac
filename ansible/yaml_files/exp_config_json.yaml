@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  db.json: |
+    {
+      "db": {
+        "host": "mysql-service",
+        "user": "backend"
+      }
+    }
+kind: ConfigMap
+metadata:
+  name: db-json
