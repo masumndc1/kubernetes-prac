@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: empty-dir
+  name: empty-dir
+spec:
+  volumes:
+  - name: logs-volume
+    emptyDir: {}
+  containers:
+  - image: nginx
+    name: empty-dir
+    volumeMounts:
+    - mountPath: /var/log/nginx
+      name: logs-volume
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

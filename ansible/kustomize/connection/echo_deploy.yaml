@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: echoserver
+  name: echoserver
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: echoserver
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: echoserver
+    spec:
+      containers:
+      - image: nginx
+        name: echoserver
+        resources: {}
+status: {}
