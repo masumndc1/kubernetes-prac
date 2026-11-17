@@ -3,4 +3,5 @@ resources:
   # - busybox.yaml
   - echoserver.yaml
   # - echo_deploy.yaml
-  - echo_service.yaml
+  - deployment.yaml
+  - service.yaml
