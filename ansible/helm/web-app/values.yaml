@@ -1,0 +1,9 @@
+# Default values for web-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+db_host: mysql-service
+db_user: root
+db_password: password
+service_port: 3000
+service_protocol: TCP
