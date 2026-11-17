@@ -1,7 +1,6 @@
 resources:
   - pod.yaml
-  # - busybox.yaml
+  - busybox.yaml
   - echoserver.yaml
-  # - echo_deploy.yaml
   - deployment.yaml
   - service.yaml
