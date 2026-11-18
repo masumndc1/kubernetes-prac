@@ -8,7 +8,7 @@ spec:
   volumes:
   - name: app-storage
     persistentVolumeClaim:
-      claimName: db-pv
+      claimName: db-pvc
   containers:
   - image: alpine
     name: vol-pod
