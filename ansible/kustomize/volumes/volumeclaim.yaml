@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: db-pv
+  name: db-pvc
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: manual
+  storageClassName: standard
   resources:
     requests:
       storage: 256Mi
