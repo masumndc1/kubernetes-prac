@@ -1,4 +1,5 @@
 resources:
   - pod.yaml
+  - vol-pod.yaml
   - persistentvolume.yaml
   - volumeclaim.yaml

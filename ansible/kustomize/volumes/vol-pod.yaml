@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: vol-pod
+  name: vol-pod
+spec:
+  volumes:
+  - name: app-storage
+    persistentVolumeClaim:
+      claimName: db-pv
+  containers:
+  - image: alpine
+    name: vol-pod
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do sleep 60; done;"]
+    volumeMounts:
+    - mountPath: /mnt/data
+      name: app-storage
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
